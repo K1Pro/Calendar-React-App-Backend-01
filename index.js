@@ -1,5 +1,3 @@
-console.log("Bart is just testing again");
-
 // const http = require("http");
 
 // const server = http.createServer(function (req, res) {
@@ -10,14 +8,48 @@ console.log("Bart is just testing again");
 // server.listen(8000);
 
 const express = require("express");
+const cors = require("cors");
+const mongoose = require("mongoose");
 const app = express();
 
-app.get("/api", function (req, res) {
+// const myMiddleware = (req, res, next) => {
+//   console.log("!!Middleware applied!!");
+//   next();
+// };
+// app.use(myMiddleware);
+
+//mongo db connection
+mongoose
+  .connect(
+    "mongodb://192.168.64.9:27017/"
+    // , {
+    //   useNewUrlParser: true,
+    //   useCreateIndex: true,
+    //   useFindAndModify: false,
+    //   useUnifiedTopology: true,
+    // }
+  )
+  .then(() => console.log("DB CONNECTED"))
+  .catch((err) => console.log("DB CONNECTION ERROR", err));
+
+app.use(
+  cors({
+    origin: ["http://192.168.64.9:3000"],
+  })
+);
+
+app.get("/api/users", function (req, res) {
   res.json({
-    user: {
-      name: "Bart",
-      age: 30,
-    },
+    users: [
+      {
+        name: "Bartosz",
+        age: 34,
+      },
+      {
+        name: "Joanna",
+        age: 33,
+      },
+    ],
   });
   // const bartkatest = "you guess it";
   // const { MongoClient } = require("mongodb");
