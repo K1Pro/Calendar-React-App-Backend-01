@@ -1,3 +1,4 @@
+const fs = require("fs");
 const express = require("express");
 const cors = require("cors");
 const mongoose = require("mongoose");
@@ -5,11 +6,22 @@ const morgan = require("morgan");
 const authRoutes = require("./routes/auth");
 
 const app = express();
-app.get("/", (req, res) => {
+
+const contacts = JSON.parse(
+  fs.readFileSync(`${__dirname}/dev-data/data/contacts.json`)
+);
+
+app.get("/api/v2/contacts", (req, res) => {
   res.status(200);
-  res.send("Hello from the server side!");
+  res.json({ status: "success", results: contacts.length, data: { contacts } });
 });
+
+app.post("/api/v2/contacts", (req, res) => {
+  res.send("You can post to this endpoint");
+});
+
 const port = 8000;
+
 app.listen(port, () => console.log("Barts server is running on port 8000"));
 
 // mongooose mongoDB connection
