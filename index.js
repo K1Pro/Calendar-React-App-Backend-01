@@ -1,24 +1,18 @@
-// const http = require("http");
-
-// const server = http.createServer(function (req, res) {
-//   res.writeHead(200, { "Content-Type": "text/html" });
-//   res.end("Contacts Manager v2.0");
-// });
-
-// server.listen(8000);
-
 const express = require("express");
 const cors = require("cors");
 const mongoose = require("mongoose");
+const morgan = require("morgan");
+const authRoutes = require("./routes/auth");
+
 const app = express();
+app.get("/", (req, res) => {
+  res.status(200);
+  res.send("Hello from the server side!");
+});
+const port = 8000;
+app.listen(port, () => console.log("Barts server is running on port 8000"));
 
-// const myMiddleware = (req, res, next) => {
-//   console.log("!!Middleware applied!!");
-//   next();
-// };
-// app.use(myMiddleware);
-
-//mongo db connection
+// mongooose mongoDB connection
 mongoose
   .connect(
     "mongodb://192.168.64.9:27017/"
@@ -38,40 +32,7 @@ app.use(
   })
 );
 
-app.get("/api/users", function (req, res) {
-  res.json({
-    users: [
-      {
-        name: "Bartosz",
-        age: 34,
-      },
-      {
-        name: "Joanna",
-        age: 33,
-      },
-    ],
-  });
-  // const bartkatest = "you guess it";
-  // const { MongoClient } = require("mongodb");
-  // // Connection URI
-  // const uri = "mongodb://192.168.64.9:27017/";
-  // // Create a new MongoClient
-  // const client = new MongoClient(uri);
-  // async function run() {
-  //   try {
-  //     // Connect the client to the server (optional starting in v4.7)
-  //     await client.connect();
-  //     // Establish and verify connection
-  //     await client.db("admin").command({ ping: 1 });
-  //     console.log("Connected successfully to server");
-  //   } finally {
-  //     // Ensures that the client will close when you finish/error
-  //     await client.close();
-  //   }
-  // }
-  // run().catch(console.dir);
+app.use(morgan("dev"));
 
-  // res.send(`hello from ${client} node api`);
-});
-
-app.listen(8000, () => console.log("Barts server is running on port 8000"));
+// routes middleware
+app.use("/api", authRoutes);
