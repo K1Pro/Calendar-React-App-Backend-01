@@ -6,6 +6,7 @@ const morgan = require("morgan");
 const authRoutes = require("./routes/auth");
 
 const app = express();
+app.use(express.json());
 
 const contacts = JSON.parse(
   fs.readFileSync(`${__dirname}/dev-data/data/contacts.json`)
@@ -16,8 +17,32 @@ app.get("/api/v2/contacts", (req, res) => {
   res.json({ status: "success", results: contacts.length, data: { contacts } });
 });
 
+app.get("/api/v2/contacts/:id/:x?", (req, res) => {
+  console.log(req.params);
+  const id = req.params.id * 1;
+  const contact = contacts.find((el) => el.id === id);
+  res.status(200);
+  res.json({
+    status: "success",
+    data: { contact },
+    // results: contacts.length, data: { contacts }
+  });
+});
+
 app.post("/api/v2/contacts", (req, res) => {
-  res.send("You can post to this endpoint");
+  // console.log(req.body);
+  const newID = contacts[contacts.length - 1].id + 1;
+  const newContact = Object.assign({ id: newID }, req.body);
+  contacts.push(newContact);
+  fs.writeFile(
+    `${__dirname}/dev-data/data/contacts.json`,
+    JSON.stringify(contacts),
+    (err) => {
+      res
+        .status(201)
+        .json({ status: "success", data: { contact: newContact } });
+    }
+  );
 });
 
 const port = 8000;
