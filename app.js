@@ -8,15 +8,33 @@ const dotenv = require("dotenv");
 dotenv.config({ path: "./config.env" });
 
 const app = express();
+
+// Middleware
+
 app.use(express.json());
+
+app.use((req, res, next) => {
+  req.requestTime = new Date().toISOString();
+  next();
+});
+
+if (process.env.NODE_ENV === "development") {
+  app.use(morgan("dev"));
+}
 
 const contacts = JSON.parse(
   fs.readFileSync(`${__dirname}/dev-data/data/contacts.json`)
 );
 
 const getAllContacts = (req, res) => {
+  console.log(req.requestTime);
   res.status(200);
-  res.json({ status: "success", results: contacts.length, data: { contacts } });
+  res.json({
+    status: "success",
+    requestedAt: req.requestTime,
+    results: contacts.length,
+    data: { contacts },
+  });
 };
 const getContact = (req, res) => {
   console.log(req.params);
@@ -66,16 +84,24 @@ const deleteContact = (req, res) => {
     data: null,
   });
 };
-
+// this is the same as the routes below:
 // app.get("/api/v2/contacts", getAllContacts);
 // app.get("/api/v2/contacts/:id/:x?", getContact);
 // app.post("/api/v2/contacts", createContact);
 // app.patch("/api/v2/contacts/:id", updateContact);
 // app.delete("/api/v2/contacts/:id", deleteContact);
+// prettier-ignore
+app
+  .route("/api/v2/contacts")
+  .get(getAllContacts)
+  .post(createContact);
 
-app.route("/api/v2/contacts").get(getAllContacts).post(createContact);
-app.route("/api/v2/contacts/:id/:x?").get(getContact).patch(updateContact).delete(deleteContact)
-
+// prettier-ignore
+app
+  .route("/api/v2/contacts/:id/:x?")
+  .get(getContact)
+  .patch(updateContact)
+  .delete(deleteContact)
 
 const port = process.env.PORT || 8000;
 
@@ -100,10 +126,6 @@ app.use(
     origin: ["http://192.168.64.9:3000"],
   })
 );
-
-if (process.env.NODE_ENV === "development") {
-  app.use(morgan("dev"));
-}
 
 // routes middleware
 app.use("/api", authRoutes);
