@@ -12,6 +12,17 @@ exports.checkID = (req, res, next, val) => {
   next();
 };
 
+// Checks if there is a First and Last Name when adding data 
+exports.checkBody = (req, res, next) => {
+  if (!req.body.FirstName || !req.body.LastName) {
+    return res.status(400).json({
+      status: "Fail",
+      message: "Missing first name or last name",
+    });
+  }
+  next();
+};
+
 // Route Handlers
 
 exports.getAllContacts = (req, res) => {

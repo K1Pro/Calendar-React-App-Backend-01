@@ -2,21 +2,20 @@ const express = require("express");
 const cors = require("cors");
 const mongoose = require("mongoose");
 const morgan = require("morgan");
+
 const contactRouter = require("./routes/contactRoutes");
+
 const dotenv = require("dotenv");
 dotenv.config({ path: "./config.env" });
 
 const app = express();
 
 // Middleware
-
 app.use(express.json());
-
 app.use((req, res, next) => {
   req.requestTime = new Date().toISOString();
   next();
 });
-
 if (process.env.NODE_ENV === "development") {
   app.use(morgan("dev"));
 }

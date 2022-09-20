@@ -1,14 +1,14 @@
-const express = require("express");
-const contactController = require("./../controllers/contactController");
+const express = require('express');
+const contactController = require('./../controllers/contactController');
 const router = express.Router();
 
-router.param("id", contactController.checkID);
+router.param('id', contactController.checkID);
 
 // prettier-ignore
 router
   .route("/")
   .get(contactController.getAllContacts)
-  .post(contactController.createContact);
+  .post(contactController.checkBody, contactController.createContact);
 
 // prettier-ignore
 router
