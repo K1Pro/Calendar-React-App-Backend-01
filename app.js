@@ -1,9 +1,9 @@
-const fs = require("fs");
 const express = require("express");
 const cors = require("cors");
 const mongoose = require("mongoose");
 const morgan = require("morgan");
 const authRoutes = require("./routes/auth");
+const contactRouter = require("./routes/contactRoutes");
 const dotenv = require("dotenv");
 dotenv.config({ path: "./config.env" });
 
@@ -22,69 +22,6 @@ if (process.env.NODE_ENV === "development") {
   app.use(morgan("dev"));
 }
 
-const contacts = JSON.parse(
-  fs.readFileSync(`${__dirname}/dev-data/data/contacts.json`)
-);
-
-const getAllContacts = (req, res) => {
-  console.log(req.requestTime);
-  res.status(200);
-  res.json({
-    status: "success",
-    requestedAt: req.requestTime,
-    results: contacts.length,
-    data: { contacts },
-  });
-};
-const getContact = (req, res) => {
-  console.log(req.params);
-  const id = req.params.id * 1;
-  const contact = contacts.find((el) => el.id === id);
-  if (!contact) {
-    return res.status(404).json({ status: "fail", message: "Invalid ID" });
-  }
-
-  res.status(200);
-  res.json({
-    status: "success",
-    data: { contact },
-    // results: contacts.length, data: { contacts }
-  });
-};
-const createContact = (req, res) => {
-  // console.log(req.body);
-  const newID = contacts[contacts.length - 1].id + 1;
-  const newContact = Object.assign({ id: newID }, req.body);
-  contacts.push(newContact);
-  fs.writeFile(
-    `${__dirname}/dev-data/data/contacts.json`,
-    JSON.stringify(contacts),
-    (err) => {
-      res
-        .status(201)
-        .json({ status: "success", data: { contact: newContact } });
-    }
-  );
-};
-const updateContact = (req, res) => {
-  if (req.params.id * 1 > contacts.length) {
-    return res.status(404).json({ status: "fail", message: "Invalid ID" });
-  }
-  res.status(200).json({
-    status: "success",
-    data: { contact: "<Updated contact here...>" },
-  });
-};
-const deleteContact = (req, res) => {
-  if (req.params.id * 1 > contacts.length) {
-    return res.status(404).json({ status: "fail", message: "Invalid ID" });
-  }
-  res.status(204).json({
-    status: "success",
-    data: null,
-  });
-};
-
 // Routes
 // this is the same as the routes below:
 // app.get("/api/v2/contacts", getAllContacts);
@@ -93,19 +30,6 @@ const deleteContact = (req, res) => {
 // app.patch("/api/v2/contacts/:id", updateContact);
 // app.delete("/api/v2/contacts/:id", deleteContact);
 app.use("/api/v2/contacts", contactRouter);
-const contactRouter = express.Router();
-// prettier-ignore
-contactRouter
-  .route("/")
-  .get(getAllContacts)
-  .post(createContact);
-
-// prettier-ignore
-contactRouter
-  .route("/:id/:x?")
-  .get(getContact)
-  .patch(updateContact)
-  .delete(deleteContact)
 
 const port = process.env.PORT || 8000;
 
