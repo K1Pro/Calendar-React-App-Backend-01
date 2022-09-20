@@ -84,21 +84,25 @@ const deleteContact = (req, res) => {
     data: null,
   });
 };
+
+// Routes
 // this is the same as the routes below:
 // app.get("/api/v2/contacts", getAllContacts);
 // app.get("/api/v2/contacts/:id/:x?", getContact);
 // app.post("/api/v2/contacts", createContact);
 // app.patch("/api/v2/contacts/:id", updateContact);
 // app.delete("/api/v2/contacts/:id", deleteContact);
+app.use("/api/v2/contacts", contactRouter);
+const contactRouter = express.Router();
 // prettier-ignore
-app
-  .route("/api/v2/contacts")
+contactRouter
+  .route("/")
   .get(getAllContacts)
   .post(createContact);
 
 // prettier-ignore
-app
-  .route("/api/v2/contacts/:id/:x?")
+contactRouter
+  .route("/:id/:x?")
   .get(getContact)
   .patch(updateContact)
   .delete(deleteContact)
