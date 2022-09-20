@@ -2,7 +2,6 @@ const express = require("express");
 const cors = require("cors");
 const mongoose = require("mongoose");
 const morgan = require("morgan");
-const authRoutes = require("./routes/auth");
 const contactRouter = require("./routes/contactRoutes");
 const dotenv = require("dotenv");
 dotenv.config({ path: "./config.env" });
@@ -31,10 +30,6 @@ if (process.env.NODE_ENV === "development") {
 // app.delete("/api/v2/contacts/:id", deleteContact);
 app.use("/api/v2/contacts", contactRouter);
 
-const port = process.env.PORT || 8000;
-
-app.listen(port, () => console.log("Barts server is running on port 8000"));
-
 // mongooose mongoDB connection
 mongoose
   .connect(
@@ -55,5 +50,4 @@ app.use(
   })
 );
 
-// routes middleware
-app.use("/api", authRoutes);
+module.exports = app;
