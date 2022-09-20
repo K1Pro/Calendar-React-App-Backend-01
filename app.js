@@ -4,6 +4,8 @@ const cors = require("cors");
 const mongoose = require("mongoose");
 const morgan = require("morgan");
 const authRoutes = require("./routes/auth");
+const dotenv = require("dotenv");
+dotenv.config({ path: "./config.env" });
 
 const app = express();
 app.use(express.json());
@@ -12,12 +14,11 @@ const contacts = JSON.parse(
   fs.readFileSync(`${__dirname}/dev-data/data/contacts.json`)
 );
 
-app.get("/api/v2/contacts", (req, res) => {
+const getAllContacts = (req, res) => {
   res.status(200);
   res.json({ status: "success", results: contacts.length, data: { contacts } });
-});
-
-app.get("/api/v2/contacts/:id/:x?", (req, res) => {
+};
+const getContact = (req, res) => {
   console.log(req.params);
   const id = req.params.id * 1;
   const contact = contacts.find((el) => el.id === id);
@@ -31,9 +32,8 @@ app.get("/api/v2/contacts/:id/:x?", (req, res) => {
     data: { contact },
     // results: contacts.length, data: { contacts }
   });
-});
-
-app.post("/api/v2/contacts", (req, res) => {
+};
+const createContact = (req, res) => {
   // console.log(req.body);
   const newID = contacts[contacts.length - 1].id + 1;
   const newContact = Object.assign({ id: newID }, req.body);
@@ -47,9 +47,8 @@ app.post("/api/v2/contacts", (req, res) => {
         .json({ status: "success", data: { contact: newContact } });
     }
   );
-});
-
-app.patch("/api/v2/contacts/:id", (req, res) => {
+};
+const updateContact = (req, res) => {
   if (req.params.id * 1 > contacts.length) {
     return res.status(404).json({ status: "fail", message: "Invalid ID" });
   }
@@ -57,9 +56,8 @@ app.patch("/api/v2/contacts/:id", (req, res) => {
     status: "success",
     data: { contact: "<Updated contact here...>" },
   });
-});
-
-app.delete("/api/v2/contacts/:id", (req, res) => {
+};
+const deleteContact = (req, res) => {
   if (req.params.id * 1 > contacts.length) {
     return res.status(404).json({ status: "fail", message: "Invalid ID" });
   }
@@ -67,9 +65,19 @@ app.delete("/api/v2/contacts/:id", (req, res) => {
     status: "success",
     data: null,
   });
-});
+};
 
-const port = 8000;
+// app.get("/api/v2/contacts", getAllContacts);
+// app.get("/api/v2/contacts/:id/:x?", getContact);
+// app.post("/api/v2/contacts", createContact);
+// app.patch("/api/v2/contacts/:id", updateContact);
+// app.delete("/api/v2/contacts/:id", deleteContact);
+
+app.route("/api/v2/contacts").get(getAllContacts).post(createContact);
+app.route("/api/v2/contacts/:id/:x?").get(getContact).patch(updateContact).delete(deleteContact)
+
+
+const port = process.env.PORT || 8000;
 
 app.listen(port, () => console.log("Barts server is running on port 8000"));
 
@@ -93,7 +101,9 @@ app.use(
   })
 );
 
-app.use(morgan("dev"));
+if (process.env.NODE_ENV === "development") {
+  app.use(morgan("dev"));
+}
 
 // routes middleware
 app.use("/api", authRoutes);

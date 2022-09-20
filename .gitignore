@@ -10,9 +10,17 @@
 /src/originals
 /backups
 /dev-data
+/public
+/dev-data
+/controllers
 
 # production
 /build
+config.env
+/utils
+/routes
+/models
+
 
 # misc
 .DS_Store
