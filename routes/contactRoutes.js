@@ -1,20 +1,18 @@
 const express = require('express');
 const contactController = require('./../controllers/contactController');
+
 const router = express.Router();
 
-router.param('id', contactController.checkID);
-
-// prettier-ignore
+// router.param('id', contactController.checkID);
 router
-  .route("/")
+  .route('/')
   .get(contactController.getAllContacts)
-  .post(contactController.checkBody, contactController.createContact);
+  .post(contactController.createContact);
 
-// prettier-ignore
 router
-  .route("/:id/:x?")
+  .route('/:id')
   .get(contactController.getContact)
   .patch(contactController.updateContact)
-  .delete(contactController.deleteContact)
+  .delete(contactController.deleteContact);
 
 module.exports = router;

@@ -1,79 +1,67 @@
-const fs = require("fs");
-const contacts = JSON.parse(
-  fs.readFileSync(`${__dirname}/../dev-data/data/contacts.json`)
-);
-
-// Middleware
-exports.checkID = (req, res, next, val) => {
-  console.log(`Contact id is ${val}`);
-  if (req.params.id * 1 > contacts.length) {
-    return res.status(404).json({ status: "fail", message: "Invalid ID" });
-  }
-  next();
-};
-
-// Checks if there is a First and Last Name when adding data 
-exports.checkBody = (req, res, next) => {
-  if (!req.body.FirstName || !req.body.LastName) {
-    return res.status(400).json({
-      status: "Fail",
-      message: "Missing first name or last name",
-    });
-  }
-  next();
-};
+const Contact = require('./../models/contactModel');
 
 // Route Handlers
 
-exports.getAllContacts = (req, res) => {
-  console.log(req.requestTime);
-  res.status(200);
-  res.json({
-    status: "success",
-    requestedAt: req.requestTime,
-    results: contacts.length,
-    data: { contacts },
-  });
+exports.getAllContacts = async (req, res) => {
+  try {
+    const contacts = await Contact.find();
+    res.status(200).json({
+      status: 'Bart success',
+      results: contacts.length,
+      data: {
+        contacts,
+      },
+    });
+  } catch (err) {
+    res.status(404).json({
+      status: 'fail',
+      message: err,
+    });
+  }
 };
 
-exports.getContact = (req, res) => {
-  console.log(req.params);
-  const id = req.params.id * 1;
-  const contact = contacts.find((el) => el.id === id);
-  res.status(200);
-  res.json({
-    status: "success",
-    data: { contact },
-    // results: contacts.length, data: { contacts }
-  });
+exports.getContact = async (req, res) => {
+  try {
+    const contact = await Contact.findById(req.params.id);
+    res.status(200).json({
+      status: 'success',
+      data: {
+        contact,
+      },
+    });
+  } catch (err) {
+    res.status(404).json({
+      status: 'fail',
+      message: err,
+    });
+  }
 };
 
-exports.createContact = (req, res) => {
-  // console.log(req.body);
-  const newID = contacts[contacts.length - 1].id + 1;
-  const newContact = Object.assign({ id: newID }, req.body);
-  contacts.push(newContact);
-  fs.writeFile(
-    `${__dirname}/dev-data/data/contacts.json`,
-    JSON.stringify(contacts),
-    (err) => {
-      res
-        .status(201)
-        .json({ status: "success", data: { contact: newContact } });
-    }
-  );
+exports.createContact = async (req, res) => {
+  try {
+    const newContact = await Contact.create(req.body);
+
+    res.status(201).json({
+      status: 'success',
+      data: {
+        contact: newContact,
+      },
+    });
+  } catch (err) {
+    res.status(400).json({ status: 'fail', message: 'Invalid Data set' });
+  }
 };
 
 exports.updateContact = (req, res) => {
   res.status(200).json({
-    status: "success",
-    data: { contact: "<Updated contact here...>" },
+    status: 'success',
+    data: { contact: '<Updated contact here...>' },
   });
 };
 
 exports.deleteContact = (req, res) => {
   res.status(204).json({
-    status: "success",
+    status: 'success',
     data: null,
   });
 };
