@@ -1,12 +1,11 @@
 const Contact = require('./../models/contactModel');
 
 // Route Handlers
-
 exports.getAllContacts = async (req, res) => {
   try {
     const contacts = await Contact.find();
     res.status(200).json({
-      status: 'Bart success',
+      status: 'success',
       results: contacts.length,
       data: {
         contacts,
@@ -37,10 +36,27 @@ exports.getContact = async (req, res) => {
   }
 };
 
+exports.getContactLastName = async (req, res) => {
+  try {
+    console.log(req.params.LastName);
+    const contact = await Contact.find({ LastName: req.params.LastName });
+    res.status(200).json({
+      status: 'success',
+      data: {
+        contact,
+      },
+    });
+  } catch (err) {
+    res.status(404).json({
+      status: 'fail',
+      message: err,
+    });
+  }
+};
+
 exports.createContact = async (req, res) => {
   try {
     const newContact = await Contact.create(req.body);
-
     res.status(201).json({
       status: 'success',
       data: {
@@ -52,16 +68,35 @@ exports.createContact = async (req, res) => {
   }
 };
 
-exports.updateContact = (req, res) => {
-  res.status(200).json({
-    status: 'success',
-    data: { contact: '<Updated contact here...>' },
-  });
+exports.updateContact = async (req, res) => {
+  try {
+    const contact = await Contact.findByIdAndUpdate(req.params.id, req.body, {
+      new: true,
+      runValidators: true,
+    });
+    res.status(200).json({
+      status: 'success',
+      data: { contact },
+    });
+  } catch (err) {
+    res.status(404).json({
+      status: 'fail',
+      message: err,
+    });
+  }
 };
 
-exports.deleteContact = (req, res) => {
-  res.status(204).json({
-    status: 'success',
-    data: null,
-  });
+exports.deleteContact = async (req, res) => {
+  try {
+    await Contact.findByIdAndDelete(req.params.id);
+    res.status(204).json({
+      status: 'success',
+      data: null,
+    });
+  } catch (err) {
+    res.status(404).json({
+      status: 'fail',
+      message: err,
+    });
+  }
 };

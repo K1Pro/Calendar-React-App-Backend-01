@@ -15,4 +15,10 @@ router
   .patch(contactController.updateContact)
   .delete(contactController.deleteContact);
 
+router
+  .route('/lastname/:LastName')
+  .get(contactController.getContactLastName)
+  .patch(contactController.updateContact)
+  .delete(contactController.deleteContact);
+
 module.exports = router;
