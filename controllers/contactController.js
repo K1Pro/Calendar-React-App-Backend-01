@@ -1,9 +1,17 @@
-const Contact = require('./../models/contactModel');
+const Contact = require(`${__dirname}/../models/contactModel`);
 
 // Route Handlers
 exports.getAllContacts = async (req, res) => {
   try {
-    const contacts = await Contact.find();
+    // Build Query
+    const queryObj = { ...req.query };
+    const excludedFields = ['page', 'sort', 'limit', 'fields'];
+    excludedFields.forEach((el) => delete queryObj[el]);
+    console.log(req.query, queryObj);
+    const query = Contact.find(queryObj);
+    // Execute Query
+    const contacts = await query;
+    // Send response
     res.status(200).json({
       status: 'success',
       results: contacts.length,
