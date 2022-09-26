@@ -23,6 +23,15 @@ exports.getAllContacts = async (req, res) => {
       query = query.sort('-createdAt');
     }
 
+    // 3) Fields limiting
+    if (req.query.fields) {
+      const fields = req.query.fields.split(',').join(' ');
+      query = query.select(fields);
+    } else {
+      // exluding the V field
+      query = query.select('-__v');
+    }
+
     // Execute Query
     const contacts = await query;
     // Send response
