@@ -1,9 +1,11 @@
 const express = require('express');
 const morgan = require('morgan');
+const cors = require('cors');
 
 const contactRouter = require('./routes/contactRoutes');
 
 const app = express();
+app.use(cors());
 
 // Middleware
 if (process.env.NODE_ENV === 'development') {
