@@ -1,5 +1,20 @@
 const Contact = require(`${__dirname}/../models/contactModel`);
 
+// Middleware
+exports.aliasCrossSell = (req, res, next) => {
+  req.query.limit = '5';
+  next();
+};
+
+// class APIFeatures {
+//   constructor(query, queryString) {
+//     this.query = query;
+//     this.queryString = queryString;
+//   }
+
+//   filter() {}
+// }
+
 // Route Handlers
 exports.getAllContacts = async (req, res) => {
   try {
