@@ -5,8 +5,8 @@ const contactSchema = new mongoose.Schema({
   LastName: String,
   BirthDate: String,
   City: String,
-  Policy1RenewMonth,
-  Policy1RenewDay,
+  Policy1RenewMonth: String,
+  Policy1RenewDay: String,
 });
 const Contact = mongoose.model('Contact', contactSchema);
 
