@@ -118,19 +118,30 @@ exports.deleteContact = async (req, res) => {
   }
 };
 
+// work on this with more appropriate queries
 exports.getContactStats = async (req, res) => {
   try {
     const stats = await Contact.aggregate([
       {
-        $match: { LastName: 'Kwasniewski' },
+        $match: { EHV: { $gte: '0' } },
       },
       {
         $group: {
           _id: null,
+          // _id: { $toUpper: '$FirstName' }, if you want stats grouped
+          totalNumberOfContacts: { $sum: 1 },
+          numContactsWithEHV: { $sum: 'EHV' },
           avgEHV: { $avg: '$EHV' },
           minEHV: { $min: '$EHV' },
           maxEHV: { $max: '$EHV' },
         },
+      },
+      {
+        $sort: { FirstName: 1 },
+      },
+      {
+        // just an example
+        $match: { _id: { $ne: 'EASY' } },
       },
     ]);
 
