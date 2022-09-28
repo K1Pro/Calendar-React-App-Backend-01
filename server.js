@@ -7,9 +7,11 @@ const app = require('./app');
 const DB = process.env.DATABASE_LOCAL;
 
 // mongooose mongoDB connection AGAIN
-mongoose.connect(DB).then(() => console.log('DB CONNECTED'));
+mongoose
+  .connect(DB)
+  .then(() => console.log('ChmuraUS Dockerized MongoDB Database Connected'));
 
 const port = process.env.PORT || 8000;
 app.listen(port, () => {
-  console.log(`Barts server is running on port ${port}`);
+  console.log(`Contact Manager Backend Server is running on port ${port}`);
 });
