@@ -117,3 +117,31 @@ exports.deleteContact = async (req, res) => {
     });
   }
 };
+
+exports.getContactStats = async (req, res) => {
+  try {
+    const stats = await Contact.aggregate([
+      {
+        $match: { LastName: 'Kwasniewski' },
+      },
+      {
+        $group: {
+          _id: null,
+          avgEHV: { $avg: '$EHV' },
+          minEHV: { $min: '$EHV' },
+          maxEHV: { $max: '$EHV' },
+        },
+      },
+    ]);
+
+    res.status(200).json({
+      status: 'success',
+      data: { stats },
+    });
+  } catch (err) {
+    res.status(404).json({
+      status: 'fail',
+      message: err,
+    });
+  }
+};

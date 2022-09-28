@@ -10,6 +10,8 @@ router
   .route('/sorted')
   .get(contactController.aliasSorted, contactController.getAllContacts);
 
+router.route('/contact-stats').get(contactController.getContactStats);
+
 router
   .route('/')
   .get(contactController.getAllContacts)
