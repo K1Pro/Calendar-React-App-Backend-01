@@ -7,8 +7,8 @@ const router = express.Router();
 // router.param('id', contactController.checkID);
 
 router
-  .route('/cross-sell')
-  .get(contactController.aliasCrossSell, contactController.getContact);
+  .route('/sorted')
+  .get(contactController.aliasSorted, contactController.getAllContacts);
 
 router
   .route('/')

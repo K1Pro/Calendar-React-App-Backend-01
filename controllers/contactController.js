@@ -2,8 +2,10 @@ const Contact = require(`${__dirname}/../models/contactModel`);
 const APIFeatures = require(`${__dirname}/../utils/apiFeatures`);
 
 // Middleware
-exports.aliasCrossSell = (req, res, next) => {
-  req.query.limit = '5';
+exports.aliasSorted = (req, res, next) => {
+  req.query.limit = '1000';
+  req.query.sort = 'LastName';
+  // req.query.fields = 'FirstName,LastName'
   next();
 };
 
