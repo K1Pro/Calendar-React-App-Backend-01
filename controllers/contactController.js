@@ -1,9 +1,10 @@
 const Contact = require(`${__dirname}/../models/contactModel`);
 const APIFeatures = require(`${__dirname}/../utils/apiFeatures`);
 const catchAsync = require(`${__dirname}/../utils/catchAsync`);
+const AppError = require(`${__dirname}/../utils/appError`);
 
 // Middleware
-exports.aliasSorted = (req, res) => {
+exports.aliasSorted = (req, res, next) => {
   req.query.limit = '1000';
   req.query.sort = 'LastName';
   // req.query.fields = 'FirstName,LastName'
@@ -32,6 +33,9 @@ exports.getAllContacts = catchAsync(async (req, res, next) => {
 
 exports.getContact = catchAsync(async (req, res, next) => {
   const contact = await Contact.findById(req.params.id);
+  if (!contact) {
+    return next(new AppError('No contact found with that ID', 404));
+  }
   res.status(200).json({
     status: 'success',
     data: {
@@ -40,16 +44,16 @@ exports.getContact = catchAsync(async (req, res, next) => {
   });
 });
 
-exports.getContactLastName = catchAsync(async (req, res, next) => {
-  console.log(req.params.LastName);
-  const contact = await Contact.find({ LastName: req.params.LastName });
-  res.status(200).json({
-    status: 'success',
-    data: {
-      contact,
-    },
-  });
-});
+// exports.getContactLastName = catchAsync(async (req, res, next) => {
+//   console.log(req.params.LastName);
+//   const contact = await Contact.find({ LastName: req.params.LastName });
+//   res.status(200).json({
+//     status: 'success',
+//     data: {
+//       contact,
+//     },
+//   });
+// });
 
 exports.createContact = catchAsync(async (req, res, next) => {
   const newContact = await Contact.create(req.body);
@@ -66,6 +70,9 @@ exports.updateContact = catchAsync(async (req, res, next) => {
     new: true,
     runValidators: true,
   });
+  if (!contact) {
+    return next(new AppError('No contact found with that ID', 404));
+  }
   res.status(200).json({
     status: 'success',
     data: { contact },
@@ -73,7 +80,10 @@ exports.updateContact = catchAsync(async (req, res, next) => {
 });
 
 exports.deleteContact = catchAsync(async (req, res, next) => {
-  await Contact.findByIdAndDelete(req.params.id);
+  const contact = await Contact.findByIdAndDelete(req.params.id);
+  if (!contact) {
+    return next(new AppError('No contact found with that ID', 404));
+  }
   res.status(204).json({
     status: 'success',
     data: null,
