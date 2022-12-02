@@ -94,17 +94,17 @@ exports.deleteContact = catchAsync(async (req, res, next) => {
 exports.getContactStats = catchAsync(async (req, res, next) => {
   const stats = await Contact.aggregate([
     {
-      $match: { EHV: { $gte: '0' } },
+      $match: { Phone: { $gte: '0' } },
     },
     {
       $group: {
         _id: null,
         // _id: { $toUpper: '$FirstName' }, if you want stats grouped
         totalNumberOfContacts: { $sum: 1 },
-        numContactsWithEHV: { $sum: 'EHV' },
-        avgEHV: { $avg: '$EHV' },
-        minEHV: { $min: '$EHV' },
-        maxEHV: { $max: '$EHV' },
+        numContactsWithEHV: { $sum: 'Phone' },
+        avgEHV: { $avg: '$Phone' },
+        minEHV: { $min: '$Phone' },
+        maxEHV: { $max: '$Phone' },
       },
     },
     {
