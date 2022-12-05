@@ -44,16 +44,30 @@ exports.getContact = catchAsync(async (req, res, next) => {
   });
 });
 
-// exports.getContactLastName = catchAsync(async (req, res, next) => {
-//   console.log(req.params.LastName);
-//   const contact = await Contact.find({ LastName: req.params.LastName });
-//   res.status(200).json({
-//     status: 'success',
-//     data: {
-//       contact,
-//     },
-//   });
-// });
+exports.getContactByPolicy1RenewDate = catchAsync(async (req, res, next) => {
+  console.log(`Policy1RenewDate: ${req.params.Policy1RenewDate}`);
+  const contacts = await Contact.find({
+    Policy1RenewDate: req.params.Policy1RenewDate,
+  });
+  res.status(200).json({
+    status: 'success',
+    results: contacts.length,
+    data: {
+      contacts,
+    },
+  });
+});
+
+exports.getContactLastName = catchAsync(async (req, res, next) => {
+  console.log(req.params.LastName);
+  const contacts = await Contact.find({ LastName: req.params.LastName });
+  res.status(200).json({
+    status: 'success',
+    data: {
+      contacts,
+    },
+  });
+});
 
 exports.createContact = catchAsync(async (req, res, next) => {
   const newContact = await Contact.create(req.body);

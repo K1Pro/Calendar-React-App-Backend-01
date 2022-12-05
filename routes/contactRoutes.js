@@ -23,10 +23,14 @@ router
   .patch(contactController.updateContact)
   .delete(contactController.deleteContact);
 
-// router
-//   .route('/lastname/:LastName')
-//   .get(contactController.getContactLastName)
-//   .patch(contactController.updateContact)
-//   .delete(contactController.deleteContact);
+router
+  .route('/Policy1RenewDate/:Policy1RenewDate')
+  .get(contactController.getContactByPolicy1RenewDate);
+
+router
+  .route('/lastname/:LastName')
+  .get(contactController.getContactLastName)
+  .patch(contactController.updateContact)
+  .delete(contactController.deleteContact);
 
 module.exports = router;
