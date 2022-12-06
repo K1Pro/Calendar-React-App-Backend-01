@@ -24,8 +24,8 @@ router
   .delete(contactController.deleteContact);
 
 router
-  .route('/Policy1RenewDate/:Policy1RenewDate')
-  .get(contactController.getContactByPolicy1RenewDate);
+  .route('/Policy1RenewMMDD/:Policy1RenewMMDD')
+  .get(contactController.getContactByPolicy1RenewMMDD);
 
 router
   .route('/lastname/:LastName')

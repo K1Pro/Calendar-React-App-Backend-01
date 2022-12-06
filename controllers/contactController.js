@@ -44,10 +44,10 @@ exports.getContact = catchAsync(async (req, res, next) => {
   });
 });
 
-exports.getContactByPolicy1RenewDate = catchAsync(async (req, res, next) => {
-  console.log(`Policy1RenewDate: ${req.params.Policy1RenewDate}`);
+exports.getContactByPolicy1RenewMMDD = catchAsync(async (req, res, next) => {
+  console.log(`Policy1RenewMMDD: ${req.params.Policy1RenewMMDD}`);
   const contacts = await Contact.find({
-    Policy1RenewDate: req.params.Policy1RenewDate,
+    Policy1RenewMMDD: req.params.Policy1RenewMMDD,
   });
   res.status(200).json({
     status: 'success',
