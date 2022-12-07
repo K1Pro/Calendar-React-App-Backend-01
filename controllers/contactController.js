@@ -45,7 +45,7 @@ exports.getContact = catchAsync(async (req, res, next) => {
 });
 
 exports.getContactByPolicy1RenewMMDD = catchAsync(async (req, res, next) => {
-  console.log(`Policy1RenewMMDD: ${req.params.Policy1RenewMMDD}`);
+  // console.log(`Policy1RenewMMDD: ${req.params.Policy1RenewMMDD}`);
   const contacts = await Contact.find({
     $or: [
       {
@@ -66,12 +66,26 @@ exports.getContactByPolicy1RenewMMDD = catchAsync(async (req, res, next) => {
 });
 
 exports.getContactLastName = catchAsync(async (req, res, next) => {
-  console.log(req.params.LastName);
+  // console.log(req.params.LastName);
   const contacts = await Contact.find({ LastName: req.params.LastName });
   res.status(200).json({
     status: 'success',
     data: {
       contacts,
+    },
+  });
+});
+
+exports.getCalendarEvents = catchAsync(async (req, res, next) => {
+  const contact = await Contact.findById(req.params.id);
+  let CalendarEvents = contact.CalendarEvents;
+  if (!contact) {
+    return next(new AppError('No contact found with that ID', 404));
+  }
+  res.status(200).json({
+    status: 'success',
+    data: {
+      CalendarEvents,
     },
   });
 });

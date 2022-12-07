@@ -27,6 +27,8 @@ router
   .route('/Policy1RenewMMDD/:Policy1RenewMMDD')
   .get(contactController.getContactByPolicy1RenewMMDD);
 
+router.route('/events/:id').get(contactController.getCalendarEvents);
+
 router
   .route('/lastname/:LastName')
   .get(contactController.getContactLastName)
