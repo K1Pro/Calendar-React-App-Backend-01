@@ -31,6 +31,39 @@ exports.getAllContacts = catchAsync(async (req, res, next) => {
   });
 });
 
+exports.getCalendarEvents = catchAsync(async (req, res, next) => {
+  const contact = await Contact.findById(req.params.id);
+  let CalendarEvents = contact.CalendarEvents;
+  if (!contact) {
+    return next(new AppError('No contact found with that ID', 404));
+  }
+  res.status(200).json({
+    status: 'success',
+    data: {
+      CalendarEvents,
+    },
+  });
+});
+
+exports.getAllContactsWithCalEvents = catchAsync(async (req, res, next) => {
+  // Execute Query
+  const features = new APIFeatures(Contact.find(), req.query)
+    .filter()
+    .sort()
+    .limitFields();
+  // .paginate();
+  const contacts = await features.query;
+
+  // Send response
+  res.status(200).json({
+    status: 'success',
+    results: contacts.length,
+    data: {
+      contacts,
+    },
+  });
+});
+
 exports.getContact = catchAsync(async (req, res, next) => {
   const contact = await Contact.findById(req.params.id);
   if (!contact) {
@@ -72,20 +105,6 @@ exports.getContactLastName = catchAsync(async (req, res, next) => {
     status: 'success',
     data: {
       contacts,
-    },
-  });
-});
-
-exports.getCalendarEvents = catchAsync(async (req, res, next) => {
-  const contact = await Contact.findById(req.params.id);
-  let CalendarEvents = contact.CalendarEvents;
-  if (!contact) {
-    return next(new AppError('No contact found with that ID', 404));
-  }
-  res.status(200).json({
-    status: 'success',
-    data: {
-      CalendarEvents,
     },
   });
 });

@@ -18,6 +18,10 @@ router
   .post(contactController.createContact);
 
 router
+  .route('/ContactsWithEvents')
+  .get(contactController.getAllContactsWithCalEvents);
+
+router
   .route('/:id')
   .get(contactController.getContact)
   .patch(contactController.updateContact)
