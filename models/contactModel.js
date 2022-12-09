@@ -42,7 +42,7 @@ const contactSchema = new mongoose.Schema(
     Policy4Number: String,
     CalendarEvents: [
       {
-        EventID: Number,
+        // EventID: Number,
         DateYYYYMMDD: String,
         DateHHMMSS: String,
         Description: String,

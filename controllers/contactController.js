@@ -33,7 +33,12 @@ exports.getAllContacts = catchAsync(async (req, res, next) => {
 
 exports.getCalendarEvents = catchAsync(async (req, res, next) => {
   const contact = await Contact.findById(req.params.id);
-  let CalendarEvents = contact.CalendarEvents;
+  const CalendarEvents = contact.CalendarEvents;
+  // .aggregate([
+  //   {
+  //     $sortArray: { input: '$CalendarEvents', sortBy: { DateYYYYMMDD: 1 } },
+  //   },
+  // ]);
   if (!contact) {
     return next(new AppError('No contact found with that ID', 404));
   }
@@ -72,21 +77,33 @@ exports.updateCalendarEvent = catchAsync(async (req, res, next) => {
   });
 });
 
-exports.getContactByPolicy1RenewMMDD = catchAsync(async (req, res, next) => {
+exports.getCalendarEvent = catchAsync(async (req, res, next) => {
+  const contact = await Contact.find({
+    'CalendarEvents._id': { _id: req.params.id },
+  });
+  res.status(200).json({
+    status: 'success',
+    data: {
+      contact,
+    },
+  });
+});
+
+exports.getContactByPolicyRenewDate = catchAsync(async (req, res, next) => {
   // console.log(`Policy1RenewMMDD: ${req.params.Policy1RenewMMDD}`);
   const contacts = await Contact.find({
     $or: [
       {
-        Policy1RenewMMDD: req.params.Policy1RenewMMDD,
+        Policy1RenewMMDD: req.params.PolicyRenewDate,
       },
       {
-        Policy2RenewMMDD: req.params.Policy1RenewMMDD,
+        Policy2RenewMMDD: req.params.PolicyRenewDate,
       },
       {
-        Policy3RenewMMDD: req.params.Policy1RenewMMDD,
+        Policy3RenewMMDD: req.params.PolicyRenewDate,
       },
       {
-        Policy4RenewMMDD: req.params.Policy1RenewMMDD,
+        Policy4RenewMMDD: req.params.PolicyRenewDate,
       },
     ],
   });

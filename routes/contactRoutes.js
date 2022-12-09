@@ -28,12 +28,15 @@ router
   .delete(contactController.deleteContact);
 
 router
-  .route('/Policy1RenewMMDD/:Policy1RenewMMDD')
-  .get(contactController.getContactByPolicy1RenewMMDD);
+  .route('/PolicyRenewDate/:PolicyRenewDate')
+  .get(contactController.getContactByPolicyRenewDate);
 
 router.route('/events/:id').get(contactController.getCalendarEvents);
 
-router.route('/UpdateEvent/:id').patch(contactController.updateCalendarEvent);
+router
+  .route('/UpdateEvent/:id')
+  .get(contactController.getCalendarEvent)
+  .patch(contactController.updateCalendarEvent);
 
 router
   .route('/lastname/:LastName')
