@@ -46,29 +46,24 @@ exports.getCalendarEvents = catchAsync(async (req, res, next) => {
 });
 
 exports.getAllContactsWithCalEvents = catchAsync(async (req, res, next) => {
-  // Execute Query
-  const features = new APIFeatures(Contact.find(), req.query)
-    .filter()
-    .sort()
-    .limitFields();
-  // .paginate();
-  const contacts = await features.query;
-
-  // Send response
+  const contacts = await Contact.find({
+    'CalendarEvents.DateYYYYMMDD': req.params.DateYYYYMMDD,
+  });
   res.status(200).json({
-    status: 'success',
-    results: contacts.length,
-    data: {
-      contacts,
-    },
+    // status: 'success',
+    // results: contact.length,
+    // data: {
+    contacts,
+    // },
   });
 });
 
-exports.getContact = catchAsync(async (req, res, next) => {
-  const contact = await Contact.findById(req.params.id);
-  if (!contact) {
-    return next(new AppError('No contact found with that ID', 404));
-  }
+exports.updateCalendarEvent = catchAsync(async (req, res, next) => {
+  const contact = await Contact.findOneAndUpdate(
+    { 'CalendarEvents._id': { _id: req.params.id } },
+    { $set: { 'CalendarEvents.$': req.body } },
+    { new: true, runValidators: true }
+  );
   res.status(200).json({
     status: 'success',
     data: {
@@ -87,6 +82,12 @@ exports.getContactByPolicy1RenewMMDD = catchAsync(async (req, res, next) => {
       {
         Policy2RenewMMDD: req.params.Policy1RenewMMDD,
       },
+      {
+        Policy3RenewMMDD: req.params.Policy1RenewMMDD,
+      },
+      {
+        Policy4RenewMMDD: req.params.Policy1RenewMMDD,
+      },
     ],
   });
   res.status(200).json({
@@ -94,6 +95,19 @@ exports.getContactByPolicy1RenewMMDD = catchAsync(async (req, res, next) => {
     results: contacts.length,
     data: {
       contacts,
+    },
+  });
+});
+
+exports.getContact = catchAsync(async (req, res, next) => {
+  const contact = await Contact.findById(req.params.id);
+  if (!contact) {
+    return next(new AppError('No contact found with that ID', 404));
+  }
+  res.status(200).json({
+    status: 'success',
+    data: {
+      contact,
     },
   });
 });

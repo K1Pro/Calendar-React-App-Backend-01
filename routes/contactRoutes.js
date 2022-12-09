@@ -18,7 +18,7 @@ router
   .post(contactController.createContact);
 
 router
-  .route('/ContactsWithEvents')
+  .route('/ContactsWithEvents/:DateYYYYMMDD')
   .get(contactController.getAllContactsWithCalEvents);
 
 router
@@ -32,6 +32,8 @@ router
   .get(contactController.getContactByPolicy1RenewMMDD);
 
 router.route('/events/:id').get(contactController.getCalendarEvents);
+
+router.route('/UpdateEvent/:id').patch(contactController.updateCalendarEvent);
 
 router
   .route('/lastname/:LastName')
