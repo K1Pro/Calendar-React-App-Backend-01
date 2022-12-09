@@ -63,7 +63,19 @@ exports.getAllContactsWithCalEvents = catchAsync(async (req, res, next) => {
   });
 });
 
+exports.getCalendarEvent = catchAsync(async (req, res, next) => {
+  const contact = await Contact.findOne({
+    'CalendarEvents._id': { _id: req.params.id },
+  });
+  res.status(200).json({
+    status: 'success',
+    data: {
+      contact,
+    },
+  });
+});
 exports.updateCalendarEvent = catchAsync(async (req, res, next) => {
+  console.log(req.body);
   const contact = await Contact.findOneAndUpdate(
     { 'CalendarEvents._id': { _id: req.params.id } },
     { $set: { 'CalendarEvents.$': req.body } },
@@ -76,16 +88,29 @@ exports.updateCalendarEvent = catchAsync(async (req, res, next) => {
     },
   });
 });
-
-exports.getCalendarEvent = catchAsync(async (req, res, next) => {
-  const contact = await Contact.find({
-    'CalendarEvents._id': { _id: req.params.id },
-  });
+exports.getContact = catchAsync(async (req, res, next) => {
+  const contact = await Contact.findById(req.params.id);
+  if (!contact) {
+    return next(new AppError('No contact found with that ID', 404));
+  }
   res.status(200).json({
     status: 'success',
     data: {
       contact,
     },
+  });
+});
+exports.updateContact = catchAsync(async (req, res, next) => {
+  const contact = await Contact.findByIdAndUpdate(req.params.id, req.body, {
+    new: true,
+    runValidators: true,
+  });
+  if (!contact) {
+    return next(new AppError('No contact found with that ID', 404));
+  }
+  res.status(200).json({
+    status: 'success',
+    data: { contact },
   });
 });
 
@@ -116,19 +141,6 @@ exports.getContactByPolicyRenewDate = catchAsync(async (req, res, next) => {
   });
 });
 
-exports.getContact = catchAsync(async (req, res, next) => {
-  const contact = await Contact.findById(req.params.id);
-  if (!contact) {
-    return next(new AppError('No contact found with that ID', 404));
-  }
-  res.status(200).json({
-    status: 'success',
-    data: {
-      contact,
-    },
-  });
-});
-
 exports.getContactLastName = catchAsync(async (req, res, next) => {
   // console.log(req.params.LastName);
   const contacts = await Contact.find({ LastName: req.params.LastName });
@@ -147,20 +159,6 @@ exports.createContact = catchAsync(async (req, res, next) => {
     data: {
       contact: newContact,
     },
-  });
-});
-
-exports.updateContact = catchAsync(async (req, res, next) => {
-  const contact = await Contact.findByIdAndUpdate(req.params.id, req.body, {
-    new: true,
-    runValidators: true,
-  });
-  if (!contact) {
-    return next(new AppError('No contact found with that ID', 404));
-  }
-  res.status(200).json({
-    status: 'success',
-    data: { contact },
   });
 });
 
