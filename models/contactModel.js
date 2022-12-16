@@ -43,6 +43,7 @@ const contactSchema = new mongoose.Schema(
     CalendarEvents: [
       {
         // EventID: Number,
+        EventAuthor: String,
         DateYYYYMMDD: String,
         DateHHMMSS: String,
         Description: String,
@@ -57,29 +58,29 @@ const contactSchema = new mongoose.Schema(
 );
 
 contactSchema.virtual('Policy1RenewDate').get(function () {
-  let thisYearA = new Date(Date.now()).toJSON().slice(0, 4);
-  let thisRenewalA = `${thisYearA}-${this.Policy1RenewMMDD}`;
+  const thisYearA = new Date(Date.now()).toJSON().slice(0, 4);
+  const thisRenewalA = `${thisYearA}-${this.Policy1RenewMMDD}`;
   if (this.Policy1RenewMMDD) {
     return thisRenewalA;
   }
 });
 contactSchema.virtual('Policy2RenewDate').get(function () {
-  let thisYearB = new Date(Date.now()).toJSON().slice(0, 4);
-  let thisRenewalB = `${thisYearB}-${this.Policy2RenewMMDD}`;
+  const thisYearB = new Date(Date.now()).toJSON().slice(0, 4);
+  const thisRenewalB = `${thisYearB}-${this.Policy2RenewMMDD}`;
   if (this.Policy2RenewMMDD) {
     return thisRenewalB;
   }
 });
 contactSchema.virtual('Policy3RenewDate').get(function () {
-  let thisYearC = new Date(Date.now()).toJSON().slice(0, 4);
-  let thisRenewalC = `${thisYearC}-${this.Policy3RenewMMDD}`;
+  const thisYearC = new Date(Date.now()).toJSON().slice(0, 4);
+  const thisRenewalC = `${thisYearC}-${this.Policy3RenewMMDD}`;
   if (this.Policy3RenewMMDD) {
     return thisRenewalC;
   }
 });
 contactSchema.virtual('Policy4RenewDate').get(function () {
-  let thisYearD = new Date(Date.now()).toJSON().slice(0, 4);
-  let thisRenewalD = `${thisYearD}-${this.Policy4RenewMMDD}`;
+  const thisYearD = new Date(Date.now()).toJSON().slice(0, 4);
+  const thisRenewalD = `${thisYearD}-${this.Policy4RenewMMDD}`;
   if (this.Policy4RenewMMDD) {
     return thisRenewalD;
   }

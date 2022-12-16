@@ -114,6 +114,35 @@ exports.updateContact = catchAsync(async (req, res, next) => {
   });
 });
 
+exports.deleteEmptyField = catchAsync(async (req, res, next) => {
+  const contact = await Contact.findByIdAndUpdate(
+    req.params.id,
+    { $unset: req.body },
+    {
+      new: true,
+      runValidators: true,
+    }
+  );
+  if (!contact) {
+    return next(new AppError('No contact found with that ID', 404));
+  }
+  res.status(200).json({
+    status: 'success',
+    data: { contact },
+  });
+});
+
+exports.deleteContact = catchAsync(async (req, res, next) => {
+  const contact = await Contact.findByIdAndDelete(req.params.id);
+  if (!contact) {
+    return next(new AppError('No contact found with that ID', 404));
+  }
+  res.status(204).json({
+    status: 'success',
+    data: null,
+  });
+});
+
 exports.getContactByPolicyRenewDate = catchAsync(async (req, res, next) => {
   // console.log(`Policy1RenewMMDD: ${req.params.Policy1RenewMMDD}`);
   const contacts = await Contact.find({
@@ -159,17 +188,6 @@ exports.createContact = catchAsync(async (req, res, next) => {
     data: {
       contact: newContact,
     },
-  });
-});
-
-exports.deleteContact = catchAsync(async (req, res, next) => {
-  const contact = await Contact.findByIdAndDelete(req.params.id);
-  if (!contact) {
-    return next(new AppError('No contact found with that ID', 404));
-  }
-  res.status(204).json({
-    status: 'success',
-    data: null,
   });
 });
 

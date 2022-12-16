@@ -28,6 +28,10 @@ router
   .delete(contactController.deleteContact);
 
 router
+  .route('/deleteEmptyField/:id')
+  .delete(contactController.deleteEmptyField);
+
+router
   .route('/PolicyRenewDate/:PolicyRenewDate')
   .get(contactController.getContactByPolicyRenewDate);
 
