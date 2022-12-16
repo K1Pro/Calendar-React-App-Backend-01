@@ -40,6 +40,7 @@ const contactSchema = new mongoose.Schema(
     Policy4Type: String,
     Policy4RenewMMDD: String,
     Policy4Number: String,
+    LastReviewDate: String,
     CalendarEvents: [
       {
         // EventID: Number,
