@@ -17,6 +17,25 @@ exports.getAllContacts = catchAsync(async (req, res, next) => {
   const features = new APIFeatures(Contact.find(), req.query)
     .filter()
     .sort()
+    .limitFields();
+  // .paginate();
+  const contacts = await features.query;
+
+  // Send response
+  res.status(200).json({
+    status: 'success',
+    results: contacts.length,
+    data: {
+      contacts,
+    },
+  });
+});
+
+exports.getMostRecentEdittedContact = catchAsync(async (req, res, next) => {
+  // Execute Query
+  const features = new APIFeatures(Contact.find(), req.query)
+    .filter()
+    .sort()
     .limitFields()
     .paginate();
   const contacts = await features.query;
@@ -75,7 +94,7 @@ exports.getCalendarEvent = catchAsync(async (req, res, next) => {
   });
 });
 exports.updateCalendarEvent = catchAsync(async (req, res, next) => {
-  console.log(req.body);
+  // console.log(req.body);
   const contact = await Contact.findOneAndUpdate(
     { 'CalendarEvents._id': { _id: req.params.id } },
     { $set: { 'CalendarEvents.$': req.body } },

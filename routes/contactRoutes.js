@@ -18,6 +18,10 @@ router
   .post(contactController.createContact);
 
 router
+  .route('/MostRecentEdittedContact')
+  .get(contactController.getMostRecentEdittedContact);
+
+router
   .route('/ContactsWithEvents/:DateYYYYMMDD')
   .get(contactController.getAllContactsWithCalEvents);
 
