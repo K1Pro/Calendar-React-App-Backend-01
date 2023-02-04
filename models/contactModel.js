@@ -51,6 +51,46 @@ const contactSchema = new mongoose.Schema(
         Completed: Boolean,
       },
     ],
+    WeeklyEvents: [
+      {
+        EventAuthor: String,
+        DayOfWeek: String,
+        DateYYYYMMDD: String,
+        DateHHMMSS: String,
+        Description: String,
+        Completed: Boolean,
+      },
+    ],
+    MonthlyEvents: [
+      {
+        EventAuthor: String,
+        DayOfMonth: String,
+        DateYYYYMMDD: String,
+        DateHHMMSS: String,
+        Description: String,
+        Completed: Boolean,
+      },
+    ],
+    SemiAnnualEvents: [
+      {
+        EventAuthor: String,
+        DayOfYear: String,
+        DateYYYYMMDD: String,
+        DateHHMMSS: String,
+        Description: String,
+        Completed: Boolean,
+      },
+    ],
+    AnnualEvents: [
+      {
+        EventAuthor: String,
+        DayOfYear: String,
+        DateYYYYMMDD: String,
+        DateHHMMSS: String,
+        Description: String,
+        Completed: Boolean,
+      },
+    ],
   },
   {
     toJSON: { virtuals: true },
