@@ -69,9 +69,41 @@ exports.getCalendarEvents = catchAsync(async (req, res, next) => {
   });
 });
 
+exports.getRecurEvents = catchAsync(async (req, res, next) => {
+  const contact = await Contact.findById(req.params.id);
+  const RecurEvents = contact.MonthlyEvents;
+  // .aggregate([
+  //   {
+  //     $sortArray: { input: '$CalendarEvents', sortBy: { DateYYYYMMDD: 1 } },
+  //   },
+  // ]);
+  if (!contact) {
+    return next(new AppError('No contact found with that ID', 404));
+  }
+  res.status(200).json({
+    status: 'success',
+    data: {
+      RecurEvents,
+    },
+  });
+});
+
 exports.getAllContactsWithCalEvents = catchAsync(async (req, res, next) => {
   const contacts = await Contact.find({
     'CalendarEvents.DateYYYYMMDD': req.params.DateYYYYMMDD,
+  });
+  res.status(200).json({
+    // status: 'success',
+    // results: contact.length,
+    // data: {
+    contacts,
+    // },
+  });
+});
+
+exports.getAllMonthlyEvents = catchAsync(async (req, res, next) => {
+  const contacts = await Contact.find({
+    'MonthlyEvents.DayOfMonth': req.params.DayOfMonth,
   });
   res.status(200).json({
     // status: 'success',

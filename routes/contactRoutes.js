@@ -26,6 +26,10 @@ router
   .get(contactController.getAllContactsWithCalEvents);
 
 router
+  .route('/MonthlyEvents/:DayOfMonth')
+  .get(contactController.getAllMonthlyEvents);
+
+router
   .route('/:id')
   .get(contactController.getContact)
   .patch(contactController.updateContact)
@@ -40,6 +44,8 @@ router
   .get(contactController.getContactByPolicyRenewDate);
 
 router.route('/events/:id').get(contactController.getCalendarEvents);
+
+router.route('/recurEvents/:id').get(contactController.getRecurEvents);
 
 router
   .route('/UpdateEvent/:id')
