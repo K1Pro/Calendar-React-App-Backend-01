@@ -93,11 +93,11 @@ exports.getAllContactsWithCalEvents = catchAsync(async (req, res, next) => {
     'CalendarEvents.DateYYYYMMDD': req.params.DateYYYYMMDD,
   });
   res.status(200).json({
-    // status: 'success',
-    // results: contact.length,
-    // data: {
-    contacts,
-    // },
+    status: 'success',
+    results: contacts.length,
+    data: {
+      contacts,
+    },
   });
 });
 
@@ -106,11 +106,11 @@ exports.getAllMonthlyEvents = catchAsync(async (req, res, next) => {
     'MonthlyEvents.DayOfMonth': req.params.DayOfMonth,
   });
   res.status(200).json({
-    // status: 'success',
-    // results: contact.length,
-    // data: {
-    contacts,
-    // },
+    status: 'success',
+    results: contacts.length,
+    data: {
+      contacts,
+    },
   });
 });
 
