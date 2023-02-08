@@ -95,6 +95,7 @@ exports.getAllContactsWithCalEvents = catchAsync(async (req, res, next) => {
   res.status(200).json({
     status: 'success',
     results: contacts.length,
+    type: 'event',
     data: {
       contacts,
     },
@@ -108,6 +109,7 @@ exports.getAllMonthlyEvents = catchAsync(async (req, res, next) => {
   res.status(200).json({
     status: 'success',
     results: contacts.length,
+    type: 'monthly',
     data: {
       contacts,
     },
@@ -215,6 +217,7 @@ exports.getContactByPolicyRenewDate = catchAsync(async (req, res, next) => {
   res.status(200).json({
     status: 'success',
     results: contacts.length,
+    type: 'renewal',
     data: {
       contacts,
     },
