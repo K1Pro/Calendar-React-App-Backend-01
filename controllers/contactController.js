@@ -88,34 +88,6 @@ exports.getRecurEvents = catchAsync(async (req, res, next) => {
   });
 });
 
-exports.getAllContactsWithCalEvents = catchAsync(async (req, res, next) => {
-  const contacts = await Contact.find({
-    'CalendarEvents.DateYYYYMMDD': req.params.DateYYYYMMDD,
-  });
-  res.status(200).json({
-    status: 'success',
-    results: contacts.length,
-    type: 'event',
-    data: {
-      contacts,
-    },
-  });
-});
-
-exports.getAllMonthlyEvents = catchAsync(async (req, res, next) => {
-  const contacts = await Contact.find({
-    'MonthlyEvents.DayOfMonth': req.params.DayOfMonth,
-  });
-  res.status(200).json({
-    status: 'success',
-    results: contacts.length,
-    type: 'monthly',
-    data: {
-      contacts,
-    },
-  });
-});
-
 exports.getCalendarEvent = catchAsync(async (req, res, next) => {
   const contact = await Contact.findOne({
     'CalendarEvents._id': { _id: req.params.id },
@@ -218,6 +190,76 @@ exports.getContactByPolicyRenewDate = catchAsync(async (req, res, next) => {
     status: 'success',
     results: contacts.length,
     type: 'renewal',
+    data: {
+      contacts,
+    },
+  });
+});
+
+exports.getAllContactsWithCalEvents = catchAsync(async (req, res, next) => {
+  const contacts = await Contact.find({
+    'CalendarEvents.DateYYYYMMDD': req.params.DateYYYYMMDD,
+  });
+  res.status(200).json({
+    status: 'success',
+    results: contacts.length,
+    type: 'event',
+    data: {
+      contacts,
+    },
+  });
+});
+
+exports.getAllAnnualEvents = catchAsync(async (req, res, next) => {
+  const contacts = await Contact.find({
+    'AnnualEvents.DayOfYear': req.params.DayOfYear,
+  });
+  res.status(200).json({
+    status: 'success',
+    results: contacts.length,
+    type: 'annual',
+    data: {
+      contacts,
+    },
+  });
+});
+
+exports.getAllSemiAnnualEvents = catchAsync(async (req, res, next) => {
+  const contacts = await Contact.find({
+    'SemiAnnualEvents.DayOfYear': req.params.DayOfYear,
+  });
+  res.status(200).json({
+    status: 'success',
+    results: contacts.length,
+    type: 'semiannual',
+    data: {
+      contacts,
+    },
+  });
+});
+
+exports.getAllMonthlyEvents = catchAsync(async (req, res, next) => {
+  const contacts = await Contact.find({
+    'MonthlyEvents.DayOfMonth': req.params.DayOfMonth,
+  });
+  res.status(200).json({
+    status: 'success',
+    results: contacts.length,
+    type: 'monthly',
+    data: {
+      contacts,
+    },
+  });
+});
+
+exports.getAllWeeklyEvents = catchAsync(async (req, res, next) => {
+  const contacts = await Contact.find({
+    'WeeklyEvents.DayOfWeek': req.params.DayOfWeek,
+  });
+  res.status(200).json({
+    status: 'success',
+    results: contacts.length,
+    type: 'weekly',
     data: {
       contacts,
     },

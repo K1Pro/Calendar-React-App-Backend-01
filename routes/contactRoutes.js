@@ -26,8 +26,20 @@ router
   .get(contactController.getAllContactsWithCalEvents);
 
 router
+  .route('/AnnualEvents/:DayOfYear')
+  .get(contactController.getAllAnnualEvents);
+
+router
+  .route('/SemiAnnualEvents/:DayOfYear')
+  .get(contactController.getAllSemiAnnualEvents);
+
+router
   .route('/MonthlyEvents/:DayOfMonth')
   .get(contactController.getAllMonthlyEvents);
+
+router
+  .route('/WeeklyEvents/:DayOfWeek')
+  .get(contactController.getAllWeeklyEvents);
 
 router.route('/recurEvents/:id').get(contactController.getRecurEvents);
 
