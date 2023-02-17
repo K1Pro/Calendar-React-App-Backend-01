@@ -75,6 +75,7 @@ const contactSchema = new mongoose.Schema(
       {
         EventAuthor: String,
         DayOfYear: String,
+        SecondDayOfYear: String,
         DateYYYYMMDD: String,
         DateHHMMSS: String,
         Description: String,

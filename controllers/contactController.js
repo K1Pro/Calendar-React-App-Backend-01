@@ -207,7 +207,10 @@ exports.getAllAnnualEvents = catchAsync(async (req, res, next) => {
 
 exports.getAllSemiAnnualEvents = catchAsync(async (req, res, next) => {
   const contacts = await Contact.find({
-    'SemiAnnualEvents.DayOfYear': req.params.DayOfYear,
+    $or: [
+      { 'SemiAnnualEvents.DayOfYear': req.params.DayOfYear },
+      { 'SemiAnnualEvents.SecondDayOfYear': req.params.DayOfYear },
+    ],
   });
   res.status(200).json({
     status: 'success',
@@ -251,21 +254,21 @@ exports.getRecurEvents = catchAsync(async (req, res, next) => {
   const contact = await Contact.findById(req.params.id);
   const WeeklyEvents = contact.WeeklyEvents;
   let RecurEvents = WeeklyEvents;
-  let Type = "Weekly";
+  let Type = 'Weekly';
   const MonthlyEvents = contact.MonthlyEvents;
   if (MonthlyEvents.length) {
     RecurEvents = MonthlyEvents;
-    Type = "Monthly";
+    Type = 'Monthly';
   }
   const SemiAnnualEvents = contact.SemiAnnualEvents;
   if (SemiAnnualEvents.length) {
     RecurEvents = SemiAnnualEvents;
-    Type = "SemiAnnual";
+    Type = 'SemiAnnual';
   }
   const AnnualEvents = contact.AnnualEvents;
   if (AnnualEvents.length) {
     RecurEvents = AnnualEvents;
-    Type = "Annual";
+    Type = 'Annual';
   }
   // .aggregate([
   //   {
