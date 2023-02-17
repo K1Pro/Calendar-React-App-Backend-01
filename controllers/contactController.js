@@ -69,25 +69,6 @@ exports.getCalendarEvents = catchAsync(async (req, res, next) => {
   });
 });
 
-exports.getRecurEvents = catchAsync(async (req, res, next) => {
-  const contact = await Contact.findById(req.params.id);
-  const RecurEvents = contact.MonthlyEvents;
-  // .aggregate([
-  //   {
-  //     $sortArray: { input: '$CalendarEvents', sortBy: { DateYYYYMMDD: 1 } },
-  //   },
-  // ]);
-  if (!contact) {
-    return next(new AppError('No contact found with that ID', 404));
-  }
-  res.status(200).json({
-    status: 'success',
-    data: {
-      RecurEvents,
-    },
-  });
-});
-
 exports.getCalendarEvent = catchAsync(async (req, res, next) => {
   const contact = await Contact.findOne({
     'CalendarEvents._id': { _id: req.params.id },
@@ -262,6 +243,43 @@ exports.getAllWeeklyEvents = catchAsync(async (req, res, next) => {
     type: 'weekly',
     data: {
       contacts,
+    },
+  });
+});
+
+exports.getRecurEvents = catchAsync(async (req, res, next) => {
+  const contact = await Contact.findById(req.params.id);
+  const WeeklyEvents = contact.WeeklyEvents;
+  let RecurEvents = WeeklyEvents;
+  let Type = "Weekly";
+  const MonthlyEvents = contact.MonthlyEvents;
+  if (MonthlyEvents.length) {
+    RecurEvents = MonthlyEvents;
+    Type = "Monthly";
+  }
+  const SemiAnnualEvents = contact.SemiAnnualEvents;
+  if (SemiAnnualEvents.length) {
+    RecurEvents = SemiAnnualEvents;
+    Type = "SemiAnnual";
+  }
+  const AnnualEvents = contact.AnnualEvents;
+  if (AnnualEvents.length) {
+    RecurEvents = AnnualEvents;
+    Type = "Annual";
+  }
+  // .aggregate([
+  //   {
+  //     $sortArray: { input: '$CalendarEvents', sortBy: { DateYYYYMMDD: 1 } },
+  //   },
+  // ]);
+  if (!contact) {
+    return next(new AppError('No contact found with that ID', 404));
+  }
+  res.status(200).json({
+    status: 'success',
+    type: Type,
+    data: {
+      RecurEvents,
     },
   });
 });
