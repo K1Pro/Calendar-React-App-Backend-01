@@ -177,6 +177,58 @@ exports.getContactByPolicyRenewDate = catchAsync(async (req, res, next) => {
   });
 });
 
+exports.getContactOnceWAllEvents = catchAsync(async (req, res, next) => {
+  const dateYYYYMMDD = req.params.VariousCalFormats;
+  const dateMMDD = req.params.VariousCalFormats.slice(5, 10);
+  const dateDD = req.params.VariousCalFormats.slice(8, 10);
+  let renewalDate = Date.parse(req.params.VariousCalFormats);
+  let renewalMMDD = new Date(
+    renewalDate +
+      1000 /*sec*/ * 60 /*min*/ * 60 /*hour*/ * 24 /*day*/ * 28 /*# of days*/
+  )
+    .toJSON()
+    .slice(5, 10);
+  const contacts = await Contact.find({
+    $or: [
+      {
+        'CalendarEvents.DateYYYYMMDD': dateYYYYMMDD,
+      },
+      {
+        MonthlyEvent1DD: dateDD,
+      },
+      {
+        MonthlyEvent2DD: dateDD,
+      },
+      {
+        YearlyEvent1MMDD: dateMMDD,
+      },
+      {
+        YearlyEvent2MMDD: dateMMDD,
+      },
+      {
+        Policy1RenewMMDD: renewalMMDD,
+      },
+      {
+        Policy2RenewMMDD: renewalMMDD,
+      },
+      {
+        Policy3RenewMMDD: renewalMMDD,
+      },
+      {
+        Policy4RenewMMDD: renewalMMDD,
+      },
+    ],
+  });
+  res.status(200).json({
+    status: 'success',
+    results: contacts.length,
+    type: 'various',
+    data: {
+      contacts,
+    },
+  });
+});
+
 exports.getAllContactsWithCalEvents = catchAsync(async (req, res, next) => {
   const contacts = await Contact.find({
     'CalendarEvents.DateYYYYMMDD': req.params.DateYYYYMMDD,

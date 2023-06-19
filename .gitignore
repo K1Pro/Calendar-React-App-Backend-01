@@ -12,6 +12,7 @@
 /dev-data
 /public
 /dev-data
+sync.ffs_lock
 
 # production
 /build

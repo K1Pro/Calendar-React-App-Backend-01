@@ -57,6 +57,10 @@ router
   .route('/PolicyRenewDate/:PolicyRenewDate')
   .get(contactController.getContactByPolicyRenewDate);
 
+router
+  .route('/ContactOnceWAllEvents/:VariousCalFormats')
+  .get(contactController.getContactOnceWAllEvents);
+
 router.route('/events/:id').get(contactController.getCalendarEvents);
 
 router
