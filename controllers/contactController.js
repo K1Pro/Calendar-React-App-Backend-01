@@ -177,7 +177,7 @@ exports.getContactByPolicyRenewDate = catchAsync(async (req, res, next) => {
   });
 });
 
-exports.getContactOnceWAllEvents = catchAsync(async (req, res, next) => {
+exports.getContactOnceAllEventTypes = catchAsync(async (req, res, next) => {
   const dateYYYYMMDD = req.params.VariousCalFormats;
   const dateMMDD = req.params.VariousCalFormats.slice(5, 10);
   const dateDD = req.params.VariousCalFormats.slice(8, 10);
@@ -188,11 +188,15 @@ exports.getContactOnceWAllEvents = catchAsync(async (req, res, next) => {
   )
     .toJSON()
     .slice(5, 10);
-  const contacts = await Contact.find({
+  const contactsWCalEvents = await Contact.find({
     $or: [
       {
         'CalendarEvents.DateYYYYMMDD': dateYYYYMMDD,
       },
+    ],
+  });
+  const contactsWRecurEvents = await Contact.find({
+    $or: [
       {
         MonthlyEvent1DD: dateDD,
       },
@@ -205,6 +209,10 @@ exports.getContactOnceWAllEvents = catchAsync(async (req, res, next) => {
       {
         YearlyEvent2MMDD: dateMMDD,
       },
+    ],
+  });
+  const contactsWRenewals = await Contact.find({
+    $or: [
       {
         Policy1RenewMMDD: renewalMMDD,
       },
@@ -219,6 +227,13 @@ exports.getContactOnceWAllEvents = catchAsync(async (req, res, next) => {
       },
     ],
   });
+  contactsWCalEvents.forEach((element) => (element.Type = 'event'));
+  contactsWRecurEvents.forEach((element) => (element.Type = 'recurring'));
+  contactsWRenewals.forEach((element) => (element.Type = 'renewal'));
+  const contacts = contactsWCalEvents.concat(
+    contactsWRecurEvents,
+    contactsWRenewals
+  );
   res.status(200).json({
     status: 'success',
     results: contacts.length,
