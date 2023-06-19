@@ -177,7 +177,7 @@ exports.getContactByPolicyRenewDate = catchAsync(async (req, res, next) => {
   });
 });
 
-exports.getContactOnceAllEventTypes = catchAsync(async (req, res, next) => {
+exports.getUniqueContactAllEventTypes = catchAsync(async (req, res, next) => {
   const dateYYYYMMDD = req.params.VariousCalFormats;
   const dateMMDD = req.params.VariousCalFormats.slice(5, 10);
   const dateDD = req.params.VariousCalFormats.slice(8, 10);
@@ -230,9 +230,14 @@ exports.getContactOnceAllEventTypes = catchAsync(async (req, res, next) => {
   contactsWCalEvents.forEach((element) => (element.Type = 'event'));
   contactsWRecurEvents.forEach((element) => (element.Type = 'recurring'));
   contactsWRenewals.forEach((element) => (element.Type = 'renewal'));
-  const contacts = contactsWCalEvents.concat(
+  const contactsCombined = contactsWCalEvents.concat(
     contactsWRecurEvents,
     contactsWRenewals
+  );
+  // This removes duplicate contacts
+  const contacts = contactsCombined.filter(
+    (obj, index) =>
+      contactsCombined.findIndex((item) => item.id === obj.id) === index
   );
   res.status(200).json({
     status: 'success',

@@ -58,8 +58,8 @@ router
   .get(contactController.getContactByPolicyRenewDate);
 
 router
-  .route('/ContactOnceAllEventTypes/:VariousCalFormats')
-  .get(contactController.getContactOnceAllEventTypes);
+  .route('/UniqueContactAllEventTypes/:VariousCalFormats')
+  .get(contactController.getUniqueContactAllEventTypes);
 
 router.route('/events/:id').get(contactController.getCalendarEvents);
 
