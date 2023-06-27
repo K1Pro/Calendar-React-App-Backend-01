@@ -178,6 +178,15 @@ exports.getContactByPolicyRenewDate = catchAsync(async (req, res, next) => {
 });
 
 exports.getUniqueContactAllEventTypes = catchAsync(async (req, res, next) => {
+  function compare(a, b) {
+    if (a.EventTime < b.EventTime) {
+      return -1;
+    }
+    if (a.EventTime > b.EventTime) {
+      return 1;
+    }
+    return 0;
+  }
   const dateYYYYMMDD = req.params.VariousCalFormats;
   const dateMMDD = req.params.VariousCalFormats.slice(5, 10);
   const dateDD = req.params.VariousCalFormats.slice(8, 10);
@@ -227,18 +236,38 @@ exports.getUniqueContactAllEventTypes = catchAsync(async (req, res, next) => {
       },
     ],
   });
-  contactsWCalEvents.forEach((element) => (element.Type = 'event'));
-  contactsWRecurEvents.forEach((element) => (element.Type = 'recurring'));
-  contactsWRenewals.forEach((element) => (element.Type = 'renewal'));
+  // Creates an EventTime value based on query and adds event type
+  contactsWCalEvents.forEach((element) => {
+    element.Type = 'event';
+    let sortedCalEvents = element.CalendarEvents.filter((obj) => {
+      return obj.DateYYYYMMDD === req.params.VariousCalFormats;
+    });
+    element.EventTime = sortedCalEvents[0].DateHHMMSS.replace('T', '');
+  });
+  contactsWRecurEvents.forEach((element) => {
+    element.Type = 'recurring';
+    element.EventTime = null;
+  });
+  contactsWRenewals.forEach((element) => {
+    element.Type = 'renewal';
+    element.EventTime = null;
+  });
+
+  // Sorts all calendar events
+  contactsWCalEvents.sort(compare);
+
+  // Combines all event types
   const contactsCombined = contactsWCalEvents.concat(
     contactsWRecurEvents,
     contactsWRenewals
   );
-  // This removes duplicate contacts
+
+  // Removes duplicate contacts
   const contacts = contactsCombined.filter(
     (obj, index) =>
       contactsCombined.findIndex((item) => item.id === obj.id) === index
   );
+
   res.status(200).json({
     status: 'success',
     results: contacts.length,
