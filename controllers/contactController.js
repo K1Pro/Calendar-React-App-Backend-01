@@ -248,7 +248,15 @@ exports.getUniqueContactAllEventTypes = catchAsync(async (req, res, next) => {
     element.Type = 'recurring';
     element.EventTime = null;
   });
-  contactsWRenewals.forEach((element) => {
+
+  // Removes contacts that have a status of "Do-Not-Renew"
+  let contactsWRenewalsNotOnDoNotRenewList = contactsWRenewals.filter(
+    (contactsWRenewal) => {
+      return contactsWRenewal.Status != 'Do-Not-Renew';
+    }
+  );
+
+  contactsWRenewalsNotOnDoNotRenewList.forEach((element) => {
     element.Type = 'renewal';
     element.EventTime = null;
   });
@@ -259,7 +267,7 @@ exports.getUniqueContactAllEventTypes = catchAsync(async (req, res, next) => {
   // Combines all event types
   const contactsCombined = contactsWCalEvents.concat(
     contactsWRecurEvents,
-    contactsWRenewals
+    contactsWRenewalsNotOnDoNotRenewList
   );
 
   // Removes duplicate contacts
