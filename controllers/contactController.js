@@ -252,14 +252,11 @@ exports.getUniqueContactAllEventTypes = catchAsync(async (req, res, next) => {
   // Removes contacts that have a status of "Do-Not-Renew"
   let contactsWRenewalsNotOnDoNotRenewList = contactsWRenewals.filter(
     (contactsWRenewal) => {
+      contactsWRenewal.Type = 'renewal';
+      contactsWRenewal.EventTime = null;
       return contactsWRenewal.Status != 'Do-Not-Renew';
     }
   );
-
-  contactsWRenewalsNotOnDoNotRenewList.forEach((element) => {
-    element.Type = 'renewal';
-    element.EventTime = null;
-  });
 
   // Sorts all calendar events
   contactsWCalEvents.sort(compare);
