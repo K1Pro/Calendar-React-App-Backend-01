@@ -221,19 +221,24 @@ exports.getUniqueContactAllEventTypes = catchAsync(async (req, res, next) => {
     ],
   });
   const contactsWRenewals = await Contact.find({
-    $or: [
+    $and: [
       {
-        Policy1RenewMMDD: renewalMMDD,
+        $or: [
+          {
+            Policy1RenewMMDD: renewalMMDD,
+          },
+          {
+            Policy2RenewMMDD: renewalMMDD,
+          },
+          {
+            Policy3RenewMMDD: renewalMMDD,
+          },
+          {
+            Policy4RenewMMDD: renewalMMDD,
+          },
+        ],
       },
-      {
-        Policy2RenewMMDD: renewalMMDD,
-      },
-      {
-        Policy3RenewMMDD: renewalMMDD,
-      },
-      {
-        Policy4RenewMMDD: renewalMMDD,
-      },
+      { Status: { $nin: ['Do-Not-Renew'] } },
     ],
   });
   // Creates an EventTime value based on query and adds event type
@@ -248,15 +253,10 @@ exports.getUniqueContactAllEventTypes = catchAsync(async (req, res, next) => {
     element.Type = 'recurring';
     element.EventTime = null;
   });
-
-  // Removes contacts that have a status of "Do-Not-Renew"
-  let contactsWRenewalsNotOnDoNotRenewList = contactsWRenewals.filter(
-    (contactsWRenewal) => {
-      contactsWRenewal.Type = 'renewal';
-      contactsWRenewal.EventTime = null;
-      return contactsWRenewal.Status != 'Do-Not-Renew';
-    }
-  );
+  contactsWRenewals.forEach((element) => {
+    element.Type = 'renewal';
+    element.EventTime = null;
+  });
 
   // Sorts all calendar events
   contactsWCalEvents.sort(compare);
@@ -264,7 +264,7 @@ exports.getUniqueContactAllEventTypes = catchAsync(async (req, res, next) => {
   // Combines all event types
   const contactsCombined = contactsWCalEvents.concat(
     contactsWRecurEvents,
-    contactsWRenewalsNotOnDoNotRenewList
+    contactsWRenewals
   );
 
   // Removes duplicate contacts
