@@ -26,24 +26,6 @@ router
   .get(contactController.getAllContactsWithCalEvents);
 
 router
-  .route('/AnnualEvents/:DayOfYear')
-  .get(contactController.getAllAnnualEvents);
-
-router
-  .route('/SemiAnnualEvents/:DayOfYear')
-  .get(contactController.getAllSemiAnnualEvents);
-
-router
-  .route('/MonthlyEvents/:DayOfMonth')
-  .get(contactController.getAllMonthlyEvents);
-
-router
-  .route('/WeeklyEvents/:DayOfWeek')
-  .get(contactController.getAllWeeklyEvents);
-
-router.route('/recurEvents/:id').get(contactController.getRecurEvents);
-
-router
   .route('/:id')
   .get(contactController.getContact)
   .patch(contactController.updateContact)
@@ -52,10 +34,6 @@ router
 router
   .route('/deleteEmptyField/:id')
   .delete(contactController.deleteEmptyField);
-
-router
-  .route('/PolicyRenewDate/:PolicyRenewDate')
-  .get(contactController.getContactByPolicyRenewDate);
 
 router
   .route('/UniqueContactAllEventTypes/:VariousCalFormats')

@@ -149,34 +149,6 @@ exports.deleteContact = catchAsync(async (req, res, next) => {
   });
 });
 
-exports.getContactByPolicyRenewDate = catchAsync(async (req, res, next) => {
-  // console.log(`Policy1RenewMMDD: ${req.params.Policy1RenewMMDD}`);
-  const contacts = await Contact.find({
-    $or: [
-      {
-        Policy1RenewMMDD: req.params.PolicyRenewDate,
-      },
-      {
-        Policy2RenewMMDD: req.params.PolicyRenewDate,
-      },
-      {
-        Policy3RenewMMDD: req.params.PolicyRenewDate,
-      },
-      {
-        Policy4RenewMMDD: req.params.PolicyRenewDate,
-      },
-    ],
-  });
-  res.status(200).json({
-    status: 'success',
-    results: contacts.length,
-    type: 'renewal',
-    data: {
-      contacts,
-    },
-  });
-});
-
 exports.getUniqueContactAllEventTypes = catchAsync(async (req, res, next) => {
   function compare(a, b) {
     if (a.EventTime < b.EventTime) {
@@ -237,18 +209,6 @@ exports.getUniqueContactAllEventTypes = catchAsync(async (req, res, next) => {
           {
             Policy4RenewDate: { $regex: renewalMMDD + '$' },
           },
-          // {
-          //   Policy1RenewMMDD: renewalMMDD,
-          // },
-          // {
-          //   Policy2RenewMMDD: renewalMMDD,
-          // },
-          // {
-          //   Policy3RenewMMDD: renewalMMDD,
-          // },
-          // {
-          //   Policy4RenewMMDD: renewalMMDD,
-          // },
         ],
       },
       { Status: { $nin: ['Do-Not-Renew'] } },
@@ -306,102 +266,6 @@ exports.getAllContactsWithCalEvents = catchAsync(async (req, res, next) => {
     type: 'event',
     data: {
       contacts,
-    },
-  });
-});
-
-exports.getAllAnnualEvents = catchAsync(async (req, res, next) => {
-  const contacts = await Contact.find({
-    'AnnualEvents.DayOfYear': req.params.DayOfYear,
-  });
-  res.status(200).json({
-    status: 'success',
-    results: contacts.length,
-    type: 'annual',
-    data: {
-      contacts,
-    },
-  });
-});
-
-exports.getAllSemiAnnualEvents = catchAsync(async (req, res, next) => {
-  const contacts = await Contact.find({
-    $or: [
-      { 'SemiAnnualEvents.DayOfYear': req.params.DayOfYear },
-      { 'SemiAnnualEvents.SecondDayOfYear': req.params.DayOfYear },
-    ],
-  });
-  res.status(200).json({
-    status: 'success',
-    results: contacts.length,
-    type: 'semiannual',
-    data: {
-      contacts,
-    },
-  });
-});
-
-exports.getAllMonthlyEvents = catchAsync(async (req, res, next) => {
-  const contacts = await Contact.find({
-    'MonthlyEvents.DayOfMonth': req.params.DayOfMonth,
-  });
-  res.status(200).json({
-    status: 'success',
-    results: contacts.length,
-    type: 'monthly',
-    data: {
-      contacts,
-    },
-  });
-});
-
-exports.getAllWeeklyEvents = catchAsync(async (req, res, next) => {
-  const contacts = await Contact.find({
-    'WeeklyEvents.DayOfWeek': req.params.DayOfWeek,
-  });
-  res.status(200).json({
-    status: 'success',
-    results: contacts.length,
-    type: 'weekly',
-    data: {
-      contacts,
-    },
-  });
-});
-
-exports.getRecurEvents = catchAsync(async (req, res, next) => {
-  const contact = await Contact.findById(req.params.id);
-  const WeeklyEvents = contact.WeeklyEvents;
-  let RecurEvents = WeeklyEvents;
-  let Type = 'Weekly';
-  const MonthlyEvents = contact.MonthlyEvents;
-  if (MonthlyEvents.length) {
-    RecurEvents = MonthlyEvents;
-    Type = 'Monthly';
-  }
-  const SemiAnnualEvents = contact.SemiAnnualEvents;
-  if (SemiAnnualEvents.length) {
-    RecurEvents = SemiAnnualEvents;
-    Type = 'SemiAnnual';
-  }
-  const AnnualEvents = contact.AnnualEvents;
-  if (AnnualEvents.length) {
-    RecurEvents = AnnualEvents;
-    Type = 'Annual';
-  }
-  // .aggregate([
-  //   {
-  //     $sortArray: { input: '$CalendarEvents', sortBy: { DateYYYYMMDD: 1 } },
-  //   },
-  // ]);
-  if (!contact) {
-    return next(new AppError('No contact found with that ID', 404));
-  }
-  res.status(200).json({
-    status: 'success',
-    type: Type,
-    data: {
-      RecurEvents,
     },
   });
 });
