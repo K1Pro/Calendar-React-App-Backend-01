@@ -190,6 +190,7 @@ exports.getUniqueContactAllEventTypes = catchAsync(async (req, res, next) => {
   const dateYYYYMMDD = req.params.VariousCalFormats;
   const dateMMDD = req.params.VariousCalFormats.slice(5, 10);
   const dateDD = req.params.VariousCalFormats.slice(8, 10);
+
   let renewalDate = Date.parse(req.params.VariousCalFormats);
   let renewalMMDD = new Date(
     renewalDate +
@@ -197,6 +198,7 @@ exports.getUniqueContactAllEventTypes = catchAsync(async (req, res, next) => {
   )
     .toJSON()
     .slice(5, 10);
+  console.log(renewalMMDD);
   const contactsWCalEvents = await Contact.find({
     $or: [
       {
@@ -225,17 +227,29 @@ exports.getUniqueContactAllEventTypes = catchAsync(async (req, res, next) => {
       {
         $or: [
           {
-            Policy1RenewMMDD: renewalMMDD,
+            Policy1RenewDate: { $regex: renewalMMDD + '$' },
           },
           {
-            Policy2RenewMMDD: renewalMMDD,
+            Policy2RenewDate: { $regex: renewalMMDD + '$' },
           },
           {
-            Policy3RenewMMDD: renewalMMDD,
+            Policy3RenewDate: { $regex: renewalMMDD + '$' },
           },
           {
-            Policy4RenewMMDD: renewalMMDD,
+            Policy4RenewDate: { $regex: renewalMMDD + '$' },
           },
+          // {
+          //   Policy1RenewMMDD: renewalMMDD,
+          // },
+          // {
+          //   Policy2RenewMMDD: renewalMMDD,
+          // },
+          // {
+          //   Policy3RenewMMDD: renewalMMDD,
+          // },
+          // {
+          //   Policy4RenewMMDD: renewalMMDD,
+          // },
         ],
       },
       { Status: { $nin: ['Do-Not-Renew'] } },
