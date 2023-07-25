@@ -198,7 +198,6 @@ exports.getUniqueContactAllEventTypes = catchAsync(async (req, res, next) => {
   )
     .toJSON()
     .slice(5, 10);
-  console.log(renewalMMDD);
   const contactsWCalEvents = await Contact.find({
     $or: [
       {
