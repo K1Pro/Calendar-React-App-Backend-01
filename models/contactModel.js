@@ -72,7 +72,6 @@ const contactSchema = new mongoose.Schema(
   }
 );
 
-// These are examples of virtuals, actually used to use them
 contactSchema.virtual('FullName').get(function () {
   const fullName = this.FirstName + this.LastName;
   if (fullName) {
@@ -84,6 +83,30 @@ contactSchema.virtual('SpouseFullName').get(function () {
   const spouseFullName = this.SpouseName + this.SpouseLastName;
   if (spouseFullName) {
     return `${this.SpouseName} ${this.SpouseLastName}`;
+  }
+});
+
+contactSchema.virtual('Policy1RenewDateMMDD').get(function () {
+  if (this.Policy1RenewDate) {
+    return `${this.Policy1RenewDate.slice(5)}`;
+  }
+});
+
+contactSchema.virtual('Policy2RenewDateMMDD').get(function () {
+  if (this.Policy2RenewDate) {
+    return `${this.Policy2RenewDate.slice(5)}`;
+  }
+});
+
+contactSchema.virtual('Policy3RenewDateMMDD').get(function () {
+  if (this.Policy3RenewDate) {
+    return `${this.Policy3RenewDate.slice(5)}`;
+  }
+});
+
+contactSchema.virtual('Policy4RenewDateMMDD').get(function () {
+  if (this.Policy4RenewDate) {
+    return `${this.Policy4RenewDate.slice(5)}`;
   }
 });
 
