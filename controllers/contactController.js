@@ -281,6 +281,102 @@ exports.getContactLastName = catchAsync(async (req, res, next) => {
   });
 });
 
+exports.getRenewals = catchAsync(async (req, res, next) => {
+  // Create a new Date object for the current date
+  const currentDate = new Date();
+
+  // Get the month and year of the current date
+  const currentMonth = currentDate.getMonth();
+  const currentYear = currentDate.getFullYear();
+
+  // Calculate the month and year of the next month
+  let nextMonth = currentMonth + 2;
+  let nextYear = currentYear;
+
+  if (nextMonth > 10) {
+    // If the next month is greater than 11 (December), add 1 to the year and set the month to 0 (January)
+    nextMonth = 0;
+    nextYear += 1;
+  }
+
+  const contactsArray = [];
+
+  for (let i = 0; i < 90; i++) {
+    // console.log(i);
+    const nextMonthDate = new Date(nextYear, nextMonth, -i);
+    const nextMonthDateShort = nextMonthDate.toISOString().slice(5, 10);
+    // console.log(nextMonthDate.toISOString().slice(5, 10));
+
+    const renewalContacts1 = await Contact.find({
+      $and: [
+        { Policy1RenewDate: { $regex: nextMonthDateShort + '$' } },
+        { Status: { $in: ['Customer'] } },
+      ],
+    });
+    if (renewalContacts1.length > 0) {
+      renewalContacts1.forEach((element) => {
+        element.RenewDate = nextMonthDateShort;
+        element.RenewNumber = 1;
+      });
+      contactsArray.push(renewalContacts1);
+    }
+
+    const renewalContacts2 = await Contact.find({
+      $and: [
+        { Policy2RenewDate: { $regex: nextMonthDateShort + '$' } },
+        { Status: { $in: ['Customer'] } },
+      ],
+    });
+    if (renewalContacts2.length > 0) {
+      renewalContacts2.forEach((element) => {
+        element.RenewDate = nextMonthDateShort;
+        element.RenewNumber = 2;
+      });
+      contactsArray.push(renewalContacts2);
+    }
+
+    const renewalContacts3 = await Contact.find({
+      $and: [
+        { Policy3RenewDate: { $regex: nextMonthDateShort + '$' } },
+        { Status: { $in: ['Customer'] } },
+      ],
+    });
+    if (renewalContacts3.length > 0) {
+      renewalContacts3.forEach((element) => {
+        element.RenewDate = nextMonthDateShort;
+        element.RenewNumber = 3;
+      });
+      contactsArray.push(renewalContacts3);
+    }
+
+    const renewalContacts4 = await Contact.find({
+      $and: [
+        { Policy4RenewDate: { $regex: nextMonthDateShort + '$' } },
+        { Status: { $in: ['Customer'] } },
+      ],
+    });
+    if (renewalContacts4.length > 0) {
+      renewalContacts4.forEach((element) => {
+        element.RenewDate = nextMonthDateShort;
+        element.RenewNumber = 4;
+      });
+      contactsArray.push(renewalContacts4);
+    }
+  }
+
+  const contacts = contactsArray.flat(2);
+  // Create a new Date object for the first day of the next month
+
+  // Send response
+  res.status(200).json({
+    status: 'success',
+    results: contacts.length,
+    data: {
+      contacts,
+    },
+  });
+});
+
 exports.createContact = catchAsync(async (req, res, next) => {
   const newContact = await Contact.create(req.body);
   res.status(201).json({

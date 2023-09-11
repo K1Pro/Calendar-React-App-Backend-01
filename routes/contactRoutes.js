@@ -12,6 +12,8 @@ router
 
 router.route('/contact-stats').get(contactController.getContactStats);
 
+router.route('/renewals').get(contactController.getRenewals);
+
 router
   .route('/')
   .get(contactController.getAllContacts)

@@ -55,6 +55,8 @@ const contactSchema = new mongoose.Schema(
     YearlyEvent2MMDD: String,
     Type: String,
     EventTime: String,
+    RenewDate: String,
+    RenewNumber: Number,
     CalendarEvents: [
       {
         // EventID: Number,
